@@ -40,7 +40,7 @@ export const loginFetch = async (user, dispatch, setLoggedIn, setErrorMessage) =
             setLoggedIn(true)
           }
 
-          localStorage.setItem("myToken", response.token);
+          // localStorage.setItem("myToken", response.token);
         }
         // console.log(response.data),
 
