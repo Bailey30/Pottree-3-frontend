@@ -1,6 +1,7 @@
-import {login, logout} from "./redux/userSlice"
+import { login, logout } from "./redux/userSlice"
 import { useSelector } from "react-redux";
-import React from "react"
+// import React from "react"
+import axios from "axios"
 
 export const TokenFetch = async (setUser, dispatch) => {
   try {
@@ -24,35 +25,71 @@ export const TokenFetch = async (setUser, dispatch) => {
 
 export const loginFetch = async (user, dispatch, setLoggedIn, setErrorMessage) => {
   try {
-    const response = await fetch(`${process.env.REACT_APP_REST_API}users/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        email: user.email,
-        password: user.password
-      }),
-    });
-   
-    const data = await response.json();
-    dispatch(login(data))
-    
-    
+    await axios.post(`${process.env.REACT_APP_REST_API}users/login`, {
+      email: user.email,
+      password: user.password
+    })
+      .then(
+        (response) => {
+          dispatch(login(response.data))
+          if (response === "wrong credentials") {
+            setErrorMessage("Incorrect email")
+          } else if (response === "wrong credentials (password)") {
+            setErrorMessage("Incorrect password")
+          } else {
+            setLoggedIn(true)
+          }
 
-    if (data === "wrong credentials") {
-      setErrorMessage("Incorrect email")
-    } else if (data === "wrong credentials (password)") {
-      setErrorMessage("Incorrect password")
-    } else {
-      setLoggedIn(true)
-    }
+          localStorage.setItem("myToken", response.token);
+        }
+        // console.log(response.data),
 
-    localStorage.setItem("myToken", data.token);
+      )
+     
+
+      
+    // const data = await res.json()
+
+
+
+
+
   } catch (error) {
     console.log(error);
   }
-};
+}
+
+// export const loginFetch = async (user, dispatch, setLoggedIn, setErrorMessage) => {
+//   try {
+//     const response = await fetch(`${process.env.REACT_APP_REST_API}users/login`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json"
+//       },
+//       body: JSON.stringify({
+//         email: user.email,
+//         password: user.password
+//       }),
+//     });
+
+//     const data = await response.json();
+//     dispatch(login(data))
+
+
+
+//     if (data === "wrong credentials") {
+//       setErrorMessage("Incorrect email")
+//     } else if (data === "wrong credentials (password)") {
+//       setErrorMessage("Incorrect password")
+//     } else {
+//       setLoggedIn(true)
+//     }
+
+//     localStorage.setItem("myToken", data.token);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 export const signUpFetch = async (user, dispatch, setLoggedIn, setErrorMessage) => {
   try {
@@ -66,9 +103,9 @@ export const signUpFetch = async (user, dispatch, setLoggedIn, setErrorMessage) 
       }),
     });
     const data = await response.json();
-   
+
     dispatch(login(data))
-    
+
     if (data === "user already exists with that email") {
       setErrorMessage("User already exists with that email")
     } else {
@@ -169,7 +206,7 @@ export const AddToBasketFetch = async (user, item) => {
   try {
     const res = await fetch(`${process.env.REACT_APP_REST_API}baskets/addToBasket`, {
       method: "PUT",
-      headers: { "Content-type": "application/json"  },
+      headers: { "Content-type": "application/json" },
       body: JSON.stringify({
         userId: user.userId,
         img: item.img,
