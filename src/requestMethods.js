@@ -202,13 +202,13 @@ export const GetBasketFetch = async (userInfo, setBasket) => {
   }
 }
 
-export const AddToBasketFetch = async (user, item) => {
+export const AddToBasketFetch = async (userInfo, item) => {
   try {
     const res = await fetch(`${process.env.REACT_APP_REST_API}baskets/addToBasket`, {
       method: "PUT",
       headers: { "Content-type": "application/json" },
       body: JSON.stringify({
-        userId: user.userId,
+        userId: userInfo.userId,
         img: item.img,
         productId: item._id,
         title: item.title,
@@ -224,13 +224,13 @@ export const AddToBasketFetch = async (user, item) => {
   }
 }
 
-export const RemoveFromBasketFetch = async (user, item) => {
+export const RemoveFromBasketFetch = async (userInfo, item) => {
   try {
     const res = await fetch(`${process.env.REACT_APP_REST_API}baskets/removefrombasket`, {
       method: "PUT",
       headers: { "Content-type": "application/json" },
       body: JSON.stringify({
-        userId: user.userId,
+        userId: userInfo.userId,
         productId: item._id
       })
     })

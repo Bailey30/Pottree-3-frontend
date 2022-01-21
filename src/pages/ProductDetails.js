@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import styled from 'styled-components';
 import { useLocation } from "react-router-dom"
+import {useSelector} from "react-redux"
 const { GetProductDetailsFetch, AddToBasketFetch } = require("../requestMethods")
 
 const PageContainer = styled.div` 
@@ -143,15 +144,16 @@ function ProductDetails({prices, setPrices, user, setUser}) {
     const location = useLocation()
     const id = location.pathname.split("/")[2]
     const [product, setProduct] = useState({})
+    const {userInfo} = useSelector(state=> state.user)
 
     useEffect(() => {
         GetProductDetailsFetch(id, setProduct)
     }, [id])
 
     const AddToBasket = ()=> {
-        AddToBasketFetch(user, product)
+        AddToBasketFetch(userInfo, product)
         // console.log(item);
-        console.log(user);
+        // console.log(user);
         const storedPrices = [...prices]
         storedPrices.push(product.price)
         setPrices(storedPrices)
@@ -163,7 +165,7 @@ useEffect(() => {
 }, [product])
     return (
         <PageContainer>
-            <Navbar prices={prices} setPrices={setPrices} user={user} setUser={setUser}/>
+            <Navbar />
         <Line></Line>
             {/* <Div> */}
             <DetailsContainer>
